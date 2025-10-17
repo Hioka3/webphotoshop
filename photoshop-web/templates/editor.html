@@ -1,0 +1,419 @@
+{% extends "base.html" %}
+
+{% block title %}Редактор - Photoshop Web{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/editor.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="editor-container">
+    <div class="toolbar">
+        <div class="tool-group">
+            <div class="tool-item">
+                <button class="tool-btn active" data-tool="brush" title="Кисть">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/>
+                    </svg>
+                </button>
+                <span class="tool-label">Кисть</span>
+            </div>
+            <div class="tool-item">
+                <button class="tool-btn" data-tool="eraser" title="Ластик">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 20H4L14.5 9.5a2.828 2.828 0 1 1 4 4L20 20z"/>
+                        <path d="M8.5 8.5L15 15"/>
+                    </svg>
+                </button>
+                <span class="tool-label">Ластик</span>
+            </div>
+            <div class="tool-item">
+                <button class="tool-btn" data-tool="retouch" title="Ретушь">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="3"/>
+                        <path d="M20.2 20.2L16.4 16.4"/>
+                        <path d="M7.6 7.6L3.8 3.8"/>
+                        <circle cx="12" cy="12" r="8"/>
+                    </svg>
+                </button>
+                <span class="tool-label">Ретушь</span>
+            </div>
+            <div class="tool-item">
+                <button class="tool-btn" data-tool="crop" title="Обрезка">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M6 2v14a2 2 0 0 0 2 2h14"/>
+                        <path d="M18 6H8a2 2 0 0 0-2 2v10"/>
+                    </svg>
+                </button>
+                <span class="tool-label">Обрезка</span>
+            </div>
+            <div class="tool-item">
+                <button class="tool-btn" data-tool="text" title="Текст">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 4h6v6"/>
+                        <path d="M4 20L20 4"/>
+                        <path d="M8 21h4"/>
+                        <path d="M10 21V11"/>
+                    </svg>
+                </button>
+                <span class="tool-label">Текст</span>
+            </div>
+            <div class="tool-item">
+                <button class="tool-btn" data-tool="rectangle" title="Прямоугольник">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                    </svg>
+                </button>
+                <span class="tool-label">Прямоугольник</span>
+            </div>
+            <div class="tool-item">
+                <button class="tool-btn" data-tool="circle" title="Круг">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                    </svg>
+                </button>
+                <span class="tool-label">Круг</span>
+            </div>
+            <div class="tool-item">
+                <button class="tool-btn" data-tool="line" title="Линия">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M6 6l12 12"/>
+                    </svg>
+                </button>
+                <span class="tool-label">Линия</span>
+            </div>
+        </div>
+
+        <div class="tool-group">
+            <div class="tool-item">
+                <button class="tool-btn" id="upload-new-btn" title="Загрузить изображение">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="17,8 12,3 7,8"/>
+                        <line x1="12" y1="3" x2="12" y2="15"/>
+                    </svg>
+                </button>
+                <span class="tool-label">Загрузить</span>
+            </div>
+            <div class="tool-item">
+                <button class="tool-btn" id="undo-btn" title="Отменить">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="1,4 1,10 7,10"/>
+                        <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/>
+                    </svg>
+                </button>
+                <span class="tool-label">Отменить</span>
+            </div>
+            <div class="tool-item">
+                <button class="tool-btn" id="redo-btn" title="Повторить">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="23,4 23,10 17,10"/>
+                        <path d="M20.49 15a9 9 0 1 1-2.13-9.36L23 10"/>
+                    </svg>
+                </button>
+                <span class="tool-label">Повторить</span>
+            </div>
+        </div>
+
+        <div class="tool-group">
+            <div class="tool-item">
+                <button class="tool-btn" id="save-btn" title="Сохранить">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+                        <polyline points="17,21 17,13 7,13 7,21"/>
+                        <polyline points="7,3 7,8 15,8"/>
+                    </svg>
+                </button>
+                <span class="tool-label">Сохранить</span>
+            </div>
+            <div class="tool-item">
+                <button class="tool-btn" id="download-btn" title="Скачать">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="7,10 12,15 17,10"/>
+                        <line x1="12" y1="15" x2="12" y2="3"/>
+                    </svg>
+                </button>
+                <span class="tool-label">Скачать</span>
+            </div>
+        </div>
+    </div>
+
+   
+    <div class="editor-workspace">
+        
+        <div class="properties-panel">
+            <div class="property-group">
+                <label>Цвет:</label>
+                <input type="color" id="color-picker" value="#ffffff">
+            </div>
+            
+            <div class="property-group">
+                <label>Размер кисти:</label>
+                <input type="range" id="brush-size" min="1" max="100" value="10">
+                <span id="brush-size-value">10px</span>
+            </div>
+            
+            <div class="property-group">
+                <label>Прозрачность:</label>
+                <input type="range" id="opacity" min="0" max="100" value="100">
+                <span id="opacity-value">100%</span>
+            </div>
+
+           
+            <div class="retouch-section" style="display: none;">
+                <h3>Ретушь</h3>
+                
+                <div class="property-group">
+                    <label>Интенсивность:</label>
+                    <input type="range" id="retouch-intensity" min="10" max="100" value="50">
+                    <span id="retouch-intensity-value">50%</span>
+                </div>
+                
+                <div class="property-group">
+                    <label>Мягкость:</label>
+                    <input type="range" id="retouch-softness" min="1" max="10" value="3">
+                    <span id="retouch-softness-value">3</span>
+                </div>
+            </div>
+
+            <!-- Фильтры -->
+            <div class="filters-section">
+                <h3>Фильтры</h3>
+                
+                <div class="filter-group">
+                    <label>Яркость:</label>
+                    <input type="range" id="brightness" min="-100" max="100" value="0">
+                    <span id="brightness-value">0</span>
+                </div>
+                
+                <div class="filter-group">
+                    <label>Контрастность:</label>
+                    <input type="range" id="contrast" min="-100" max="100" value="0">
+                    <span id="contrast-value">0</span>
+                </div>
+                
+                <div class="filter-group">
+                    <label>Насыщенность:</label>
+                    <input type="range" id="saturation" min="-100" max="100" value="0">
+                    <span id="saturation-value">0</span>
+                </div>
+                
+                <div class="filter-group">
+                    <label>Оттенок:</label>
+                    <input type="range" id="hue" min="-180" max="180" value="0">
+                    <span id="hue-value">0</span>
+                </div>
+                
+                <div class="filter-group">
+                    <label>Размытие:</label>
+                    <input type="range" id="blur" min="0" max="10" value="0" step="0.5">
+                    <span id="blur-value">0</span>
+                </div>
+                
+                <div class="filter-group">
+                    <label>Виньетка:</label>
+                    <input type="range" id="vignette" min="0" max="100" value="0">
+                    <span id="vignette-value">0</span>
+                </div>
+                
+                <div class="filter-group">
+                    <label>Зернистость:</label>
+                    <input type="range" id="grain" min="0" max="100" value="0">
+                    <span id="grain-value">0</span>
+                </div>
+                
+                <div class="filter-group">
+                    <label>Температура:</label>
+                    <input type="range" id="temperature" min="-100" max="100" value="0">
+                    <span id="temperature-value">0</span>
+                </div>
+
+                <button id="reset-filters" class="btn btn-secondary">Сбросить фильтры</button>
+                <button id="remove-background" class="btn btn-primary">Удалить фон</button>
+            </div>
+
+     
+            <div class="crop-section" style="display: none;">
+                <h3>Обрезка</h3>
+                <p class="crop-hint">💡 Выделите область мышкой на изображении, затем нажмите "Применить"</p>
+                <div class="crop-actions">
+                    <button id="rotate-left" class="btn btn-secondary">Повернуть влево</button>
+                    <button id="rotate-right" class="btn btn-secondary">Повернуть вправо</button>
+                    <button id="apply-crop" class="btn btn-primary">Применить</button>
+                </div>
+            </div>
+        </div>
+
+      
+        <div class="canvas-container">
+            <div class="canvas-wrapper">
+                <canvas id="main-canvas"></canvas>
+                <canvas id="preview-canvas"></canvas>
+            </div>
+            
+            <div class="upload-panel" id="upload-panel">
+                <div class="upload-content">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="17,8 12,3 7,8"/>
+                        <line x1="12" y1="3" x2="12" y2="15"/>
+                    </svg>
+                    <h3>Загрузите изображение</h3>
+                    <p>Перетащите файл сюда или нажмите для выбора</p>
+                    <input type="file" id="file-input" accept="image/*" style="display: none;">
+                    <button class="btn btn-primary" onclick="document.getElementById('file-input').click()">Выбрать файл</button>
+                </div>
+            </div>
+        </div>
+
+      
+        <div class="layers-panel">
+            <h3>Сравнение</h3>
+            <div class="compare-controls">
+                <button class="btn btn-primary" id="toggle-compare">
+                    <span id="compare-text">Показать оригинал</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal" id="save-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Сохранить проект</h3>
+            <button class="modal-close">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label for="project-title">Название проекта:</label>
+                <input type="text" id="project-title" placeholder="Введите название проекта">
+            </div>
+            <div class="form-group">
+                <label for="project-description">Описание:</label>
+                <textarea id="project-description" placeholder="Описание проекта (необязательно)"></textarea>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" id="cancel-save">Отмена</button>
+            <button class="btn btn-primary" id="confirm-save">Сохранить</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/editor.js') }}"></script>
+{% if project %}
+<script>
+   
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('=== Loading project ===');
+        console.log('Project ID: {{ project.id }}');
+        console.log('Project title: {{ project.title }}');
+        
+        
+        const uploadPanel = document.getElementById('upload-panel');
+        if (uploadPanel) {
+            uploadPanel.style.display = 'none';
+            console.log('Upload panel hidden');
+        }
+        
+        const projectDataRaw = '{{ project.project_data | safe }}';
+        console.log('Raw project data length:', projectDataRaw.length);
+        
+        let projectData;
+        try {
+            projectData = JSON.parse(projectDataRaw);
+            console.log('Parsed project data:', projectData);
+        } catch(e) {
+            console.error('Failed to parse project data:', e);
+            alert('Ошибка загрузки проекта: неверный формат данных');
+            return;
+        }
+        
+        if (projectData && projectData.image) {
+            console.log('Image data found, length:', projectData.image.length);
+            console.log('Image data preview:', projectData.image.substring(0, 100));
+            
+          
+            const img = new Image();
+            img.onload = function() {
+                console.log('Image loaded successfully');
+                const editor = window.photoEditor;
+                if (editor) {
+                    editor.canvas.width = {{ project.width or 800 }};
+                    editor.canvas.height = {{ project.height or 600 }};
+                    editor.ctx.drawImage(img, 0, 0);
+                    
+                   
+                    if (projectData.filters) {
+                        editor.filters = projectData.filters;
+                    }
+                    
+                
+                    editor.originalImageData = editor.ctx.getImageData(0, 0, editor.canvas.width, editor.canvas.height);
+                    editor.currentImageData = editor.ctx.getImageData(0, 0, editor.canvas.width, editor.canvas.height);
+                    
+               
+                    if (typeof editor.saveHistory === 'function') {
+                        editor.saveHistory();
+                    }
+                    
+                    
+                    if (typeof editor.saveOriginalState === 'function') {
+                        editor.saveOriginalState();
+                    }
+                    
+                    console.log('✅ Проект загружен успешно на canvas');
+                } else {
+                    console.error('❌ Editor not found!');
+                }
+            };
+            img.onerror = function(e) {
+                console.error('Failed to load image:', e);
+                alert('Ошибка загрузки изображения проекта');
+            };
+            img.src = projectData.image;
+        } else {
+            console.error('No image data in project');
+            alert('Проект не содержит изображения');
+        }
+    });
+</script>
+{% endif %}
+
+<script>
+
+function updateSliderProgress(slider) {
+    const value = slider.value;
+    const min = slider.min || 0;
+    const max = slider.max || 100;
+    const percentage = ((value - min) / (max - min)) * 100;
+    
+    slider.style.setProperty('--value', percentage + '%');
+    slider.style.background = `linear-gradient(to right, 
+        #667eea 0%, 
+        #764ba2 ${percentage}%, 
+        rgba(255, 255, 255, 0.15) ${percentage}%, 
+        rgba(255, 255, 255, 0.15) 100%)`;
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const sliders = document.querySelectorAll('input[type="range"]');
+    
+    sliders.forEach(slider => {
+        
+        updateSliderProgress(slider);
+        
+       
+        slider.addEventListener('input', function() {
+            updateSliderProgress(this);
+        });
+    });
+});
+</script>
+
+{% endblock %}
