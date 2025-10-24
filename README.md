@@ -64,5 +64,5 @@
 ### Приложение находится в разработке<br>
 
 [text](README.md) ![text](<screens/веб фотошоп 1.png>)<br>
-[text](README.md) ![text](<screens/веб фотошоп 1.png>) ![text](<screens/веб фотошоп 2.png>)<br>
+![alt text](<screens/веб фотошоп 2.png>)<br>
 ![alt text](<screens/веб фотошоп 3.png>)
